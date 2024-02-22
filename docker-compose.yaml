@@ -1,0 +1,27 @@
+version: '3.3'
+
+networks:
+  containerNetwork:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.50.70.0/29
+
+services:
+# Real Estate Data API Hosted
+# using Django REST Framework
+  django-rest-api:
+    restart: always
+    container_name: django-rest-api
+    build:
+      context: ./django-rest-api
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    volumes:
+      - ./django-rest-api/realestate_data_api:/opt/app
+    networks:
+      containerNetwork:
+        ipv4_address: 10.50.70.3
+    privileged: true

@@ -1,0 +1,14 @@
+# Python venv folders
+Lib
+Scripts
+__pycache__/
+pyvenv.cfg
+# env files
+.env
+environment.env
+# Mysql Directory for
+# devlopment purposes
+mysqlapp/
+docker-compose-dev.yaml
+# Ignore Log Files
+*.logs
