@@ -1,10 +1,11 @@
 from rest_framework import serializers
 from .models import (Airbnbdata, Airbnbdataassociations,
                      Citiesdata, Collegesdata, Mortgagedata,
-                     Remaxlistings, Remaxlistingsairbnb, 
-                     Remaxlistingsameneties, Remaxlistingsassociations, 
-                     Remaxlistingscolleges, Remaxlistingsschools, 
-                     Remaxlistingsuniversities, Remaxlistingswalkscore, 
+                     Realestatelistings, Realestatelistingsairbnb, 
+                     Realestatelistingsameneties, Realestatelistingsassociations, 
+                     Realestatelistingscolleges, Realestatelistingsschools, 
+                     Realestatelistingsuniversities, Realestatelistingswalkscore,
+                     Realestatelistingsdetailed, 
                      Schooldata, Universitiesdata, Yelpbusinessdata, 
                      Yelpdata, Zillowlistings, Zillowlistingsairbnb, 
                      Zillowlistingsameneties, Zillowlistingsassociations, 
@@ -36,44 +37,49 @@ class MortgagedataModelSerializer(serializers.ModelSerializer):
     model = Mortgagedata
     fields = "__all__"
 
-class RemaxlistingsModelSerializer(serializers.ModelSerializer):
+class RealestatelistingsModelSerializer(serializers.ModelSerializer):
   class Meta:
-    model = Remaxlistings
+    model = Realestatelistings
     fields = "__all__"
 
-class RemaxlistingsairbnbModelSerializer(serializers.ModelSerializer):
+class RealestatelistingsairbnbModelSerializer(serializers.ModelSerializer):
   class Meta:
-    model = Remaxlistingsairbnb
+    model = Realestatelistingsairbnb
     fields = "__all__"
 
-class RemaxlistingsamenetiesModelSerializer(serializers.ModelSerializer):
+class RealestatelistingsamenetiesModelSerializer(serializers.ModelSerializer):
   class Meta:
-    model = Remaxlistingsameneties
+    model = Realestatelistingsameneties
     fields = "__all__"
 
-class RemaxlistingsassociationsModelSerializer(serializers.ModelSerializer):
+class RealestatelistingsassociationsModelSerializer(serializers.ModelSerializer):
   class Meta:
-    model = Remaxlistingsassociations
+    model = Realestatelistingsassociations
     fields = "__all__"
 
-class RemaxlistingscollegesModelSerializer(serializers.ModelSerializer):
+class RealestatelistingsdetailedModelSerializer(serializers.ModelSerializer):
   class Meta:
-    model = Remaxlistingscolleges
+    model = Realestatelistingsdetailed
     fields = "__all__"
 
-class RemaxlistingsschoolsModelSerializer(serializers.ModelSerializer):
+class RealestatelistingscollegesModelSerializer(serializers.ModelSerializer):
   class Meta:
-    model = Remaxlistingsschools
+    model = Realestatelistingscolleges
     fields = "__all__"
 
-class RemaxlistingsuniversitiesModelSerializer(serializers.ModelSerializer):
+class RealestatelistingsschoolsModelSerializer(serializers.ModelSerializer):
   class Meta:
-    model = Remaxlistingsuniversities
+    model = Realestatelistingsschools
     fields = "__all__"
 
-class RemaxlistingswalkscoreModelSerializer(serializers.ModelSerializer):
+class RealestatelistingsuniversitiesModelSerializer(serializers.ModelSerializer):
   class Meta:
-    model = Remaxlistingswalkscore
+    model = Realestatelistingsuniversities
+    fields = "__all__"
+
+class RealestatelistingswalkscoreModelSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Realestatelistingswalkscore
     fields = "__all__"
 
 class SchooldataModelSerializer(serializers.ModelSerializer):

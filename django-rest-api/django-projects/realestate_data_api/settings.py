@@ -30,9 +30,12 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.50.70.3', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
-DATABASE_ROUTERS = ['realestate_data_api.routers.APIRouter']
+DATABASE_ROUTERS = ['routers.default_router.DefaultAppRouter',
+                    'routers.default_router.OntarioRouter']
+
+SITE_ID=1
 
 # Application definition
 
@@ -44,14 +47,30 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'realestate_data_api'
+    'realestate_data_api',
+    # 'googlelogin'
+    # 'django.contrib.sites',
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.google'
 ]
+
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'scode': [
+#             'profile',
+#             'email',
+#         ],
+#         'AUTH_PARAMS': {'access_type': 'online'}
+#     }
+# }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -83,7 +102,8 @@ WSGI_APPLICATION = 'realestate_data_api.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'default': {},
+    'DjangoDB': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv("MYSQL_DATABASE_DJANGODB"),
         'USER': os.getenv("MYSQL_USER"),
@@ -187,3 +207,11 @@ LOGGING = {
         },
     },
 }
+
+# AUTHENTICATION_BACKENDS = {
+#     'django.contrib.auth.backends.ModelBackend',
+#     'allauth.accounts.auth_backends.AuthenticationBackend'
+# }
+
+# LOGIN_DIRECT_URL = '/'
+# LOGOUT_REDIRECT_URL = '/'
