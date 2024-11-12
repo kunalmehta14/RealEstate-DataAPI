@@ -1,10 +1,10 @@
-FROM ubuntu:latest
+FROM ubuntu:22.04
 ENV LANG en_US.utf8
-RUN apt update && apt full-upgrade -y
+RUN apt update && apt upgrade -y
 RUN apt install \
     sudo -y \
     supervisor -y \
-    nano -y \
+    # nano -y \
     pkg-config -y \
     libmysqlclient-dev
 # Configure TimeZone
