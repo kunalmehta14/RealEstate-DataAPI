@@ -1,0 +1,1 @@
+FT.CREATE searchIdx ON JSON PREFIX 1 item: SCHEMA $.id AS id TAG SORTABLE $.item_description AS item_description TEXT SORTABLE $.endpoint AS endpoint TEXT $.vector_embeddings AS vector VECTOR HNSW 6 TYPE FLOAT64 DIM 384 DISTANCE_METRIC COSINE
