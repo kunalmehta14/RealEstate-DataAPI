@@ -1,0 +1,17 @@
+pipeline {
+    agent any
+    environment {
+        BACKEND_SERVER_IP = credentials('backend_server_ip')
+    }
+    stages {
+        stage('Update Redis Cache Enteries'){
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    sshagent(['backend_server_ssh']) {
+                        sh 'ssh -o StrictHostKeyChecking=no -l jenkins $BACKEND_SERVER_IP "docker exec -i ml-logic-service python3 /opt/src/vec_emb_gen/create_aggregate_data.py"'
+                    }
+                }
+            }
+        }
+    }
+}
