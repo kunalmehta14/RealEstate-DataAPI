@@ -1,3 +1,5 @@
+# Old function, replaced with redis_vectory_search.
+
 from sentence_transformers import SentenceTransformer
 from sentence_transformers import util
 import re
