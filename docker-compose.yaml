@@ -1,22 +1,20 @@
 services:
 # Real Estate Data API Hosted
 # using Django REST Framework
-  django-rest-api:
+  django-service:
     restart: always
-    container_name: django-rest-api
-    build:
-      context: ./django-rest-api
-      dockerfile: Dockerfile
+    container_name: django-service
+    image: ghcr.io/kunalmehta14/realestate-django-service
     ports:
       - 8080:80
     volumes:
-      - ./django-rest-api/django-projects:/opt/app
+      - ./django-service/django-projects:/opt/app
     privileged: true
   ml-logic-service:
     restart: always
     container_name: ml-logic-service
-    image: ml-logic-service:v1
+    image: ghcr.io/kunalmehta14/realestate-ml-logic-service
     ports:
-      - 8008:8008
+      - 8010:8010
     volumes:
       - ./ml-logic-service/src:/opt/src
