@@ -14,7 +14,7 @@ RUN apt install python3-pip -y
 # Create App Directory
 RUN mkdir /opt/src
 RUN chown administrator:root /opt/src
-COPY requirements.txt /opt/src/requirements.txt
+COPY src/requirements.txt /opt/src/requirements.txt
 WORKDIR /opt/src
 RUN pip install -r requirements.txt
 #Copy supervisoryd.conf configuration that defines the startup services
