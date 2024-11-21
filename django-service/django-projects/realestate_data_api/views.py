@@ -13,10 +13,7 @@ from .models import (Airbnbdata, Airbnbdataassociations,
                      Realestatelistingscolleges, Realestatelistingsschools,Realestatelistingsdetailed, 
                      Realestatelistingsuniversities, Realestatelistingswalkscore, 
                      Schooldata, Universitiesdata, Yelpbusinessdata, 
-                     Yelpdata, Zillowlistings, Zillowlistingsairbnb, 
-                     Zillowlistingsameneties, Zillowlistingsassociations, 
-                     Zillowlistingscolleges, Zillowlistingsschools, 
-                     Zillowlistingsuniversities, Zillowlistingswalkscore)
+                     Yelpdata)
 from .serializer import (AirbnbdataModelSerializer, AirbnbdataassociationsModelSerializer, 
                          CitiesdataModelSerializer, CollegesdataModelSerializer, 
                          MortgagedataModelSerializer, RealestatelistingsModelSerializer, 
@@ -25,15 +22,9 @@ from .serializer import (AirbnbdataModelSerializer, AirbnbdataassociationsModelS
                          RealestatelistingsschoolsModelSerializer, RealestatelistingsuniversitiesModelSerializer, 
                          RealestatelistingswalkscoreModelSerializer, RealestatelistingsdetailedModelSerializer, 
                          SchooldataModelSerializer, UniversitiesdataModelSerializer, YelpbusinessdataModelSerializer, 
-                         YelpdataModelSerializer, ZillowlistingsModelSerializer, 
-                         ZillowlistingsairbnbModelSerializer, ZillowlistingsamenetiesModelSerializer, 
-                         ZillowlistingsassociationsModelSerializer, ZillowlistingscollegesModelSerializer, 
-                         ZillowlistingsschoolsModelSerializer, ZillowlistingsuniversitiesModelSerializer,
-                         ZillowlistingswalkscoreModelSerializer)
-from django.utils import timezone
+                         YelpdataModelSerializer)
 from django.contrib import auth
 from django.shortcuts import redirect
-import google.generativeai as genai
 from django.contrib.auth.models import User
 
 class AirbnbdataListAPIView(APIView):
@@ -223,7 +214,6 @@ def chatProcessorAPIView(request):
                               )
       return HttpResponse(response, content_type="application/json")
 
-
 class CollegesdataListAPIView(APIView):
   queryset = Collegesdata.objects.all()
   serializer_class = CollegesdataModelSerializer
@@ -243,88 +233,3 @@ class YelpbusinessdataListAPIView(APIView):
 class YelpdataListAPIView(APIView):
   queryset = Yelpdata.objects.all()
   serializer_class = YelpdataModelSerializer
-
-class ZillowlistingsListAPIView(APIView):
-  queryset = Zillowlistings.objects.all()
-  serializer_class = ZillowlistingsModelSerializer
-
-class ZillowlistingsairbnbListAPIView(APIView):
-  queryset = Zillowlistingsairbnb.objects.all()
-  serializer_class = ZillowlistingsairbnbModelSerializer
-
-class ZillowlistingsamenetiesListAPIView(APIView):
-  queryset = Zillowlistingsameneties.objects.all()
-  serializer_class = ZillowlistingsamenetiesModelSerializer
-
-class ZillowlistingsassociationsListAPIView(APIView):
-  queryset = Zillowlistingsassociations.objects.all()
-  serializer_class = ZillowlistingsassociationsModelSerializer
-
-class ZillowlistingscollegesListAPIView(APIView):
-  queryset = Zillowlistingscolleges.objects.all()
-  serializer_class = ZillowlistingscollegesModelSerializer
-
-class ZillowlistingsschoolsListAPIView(APIView):
-  queryset = Zillowlistingsschools.objects.all()
-  serializer_class = ZillowlistingsschoolsModelSerializer
-
-class ZillowlistingsuniversitiesListAPIView(APIView):
-  queryset = Zillowlistingsuniversities.objects.all()
-  serializer_class = ZillowlistingsuniversitiesModelSerializer
-
-class ZillowlistingswalkscoreListAPIView(APIView):
-  queryset = Zillowlistingswalkscore.objects.all()
-  serializer_class = ZillowlistingswalkscoreModelSerializer
-
-
-  ## RETRIEVE API CODE
-  # def get_object(self):
-  #   cityname = self.kwargs.get('cityname')
-  #   beds = self.kwargs.get('beds')
-  #   if cityname is not None:
-  #      queryset = queryset.filter(cityname=cityname)
-  #   elif beds is not None:
-  #     queryset = queryset.filter(beds=beds)
-  #   elif beds is not None and cityname is not None:
-  #     queryset = queryset.filter(beds=beds, 
-  #                                cityname=cityname)
-  #   else:
-  #     item = Realestatelistings.objects.all()
-  #     return item
-  # def retrieve(self, request, *args, **kwargs):
-  #   try:
-  #     instance = self.get_object()
-  #     lisitng_serializer = RealestatelistingsModelSerializer(instance)
-  #     return Response({
-  #         'lisitng': lisitng_serializer.data,
-  #       })
-  #   except Exception as e:
-  #     print(e)
-
-# class RealestatelistingsairbnbListAPIView(APIView):
-#   queryset = Realestatelistingsairbnb.objects.all()
-#   serializer_class = RealestatelistingsairbnbModelSerializer
-
-# class RealestatelistingsamenetiesListAPIView(APIView):
-#   queryset = Realestatelistingsameneties.objects.all()
-#   serializer_class = RealestatelistingsamenetiesModelSerializer
-
-# class RealestatelistingsassociationsListAPIView(APIView):
-#   queryset = Realestatelistingsassociations.objects.all()
-#   serializer_class = RealestatelistingsassociationsModelSerializer
-
-# class RealestatelistingscollegesListAPIView(APIView):
-#   queryset = Realestatelistingscolleges.objects.all()
-#   serializer_class = RealestatelistingscollegesModelSerializer
-
-# class RealestatelistingsschoolsListAPIView(APIView):
-#   queryset = Realestatelistingsschools.objects.all()
-#   serializer_class = RealestatelistingsschoolsModelSerializer
-
-# class RealestatelistingsuniversitiesListAPIView(APIView):
-#   queryset = Realestatelistingsuniversities.objects.all()
-#   serializer_class = RealestatelistingsuniversitiesModelSerializer
-
-# class RealestatelistingswalkscoreListAPIView(APIView):
-#   queryset = Realestatelistingswalkscore.objects.all()
-#   serializer_class = RealestatelistingswalkscoreModelSerializer

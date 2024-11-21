@@ -7,10 +7,7 @@ from .models import (Airbnbdata, Airbnbdataassociations,
                      Realestatelistingsuniversities, Realestatelistingswalkscore,
                      Realestatelistingsdetailed, 
                      Schooldata, Universitiesdata, Yelpbusinessdata, 
-                     Yelpdata, Zillowlistings, Zillowlistingsairbnb, 
-                     Zillowlistingsameneties, Zillowlistingsassociations, 
-                     Zillowlistingscolleges, Zillowlistingsschools, 
-                     Zillowlistingsuniversities, Zillowlistingswalkscore)
+                     Yelpdata)
 
 class AirbnbdataModelSerializer(serializers.ModelSerializer):
   class Meta:
@@ -100,44 +97,4 @@ class YelpbusinessdataModelSerializer(serializers.ModelSerializer):
 class YelpdataModelSerializer(serializers.ModelSerializer):
   class Meta:
     model = Yelpdata
-    fields = "__all__"
-
-class ZillowlistingsModelSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Zillowlistings
-    fields = "__all__"
-
-class ZillowlistingsairbnbModelSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Zillowlistingsairbnb
-    fields = "__all__"
-
-class ZillowlistingsamenetiesModelSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Zillowlistingsameneties
-    fields = "__all__"
-
-class ZillowlistingsassociationsModelSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Zillowlistingsassociations
-    fields = "__all__"
-
-class ZillowlistingscollegesModelSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Zillowlistingscolleges
-    fields = "__all__"
-
-class ZillowlistingsschoolsModelSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Zillowlistingsschools
-    fields = "__all__"
-
-class ZillowlistingsuniversitiesModelSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Zillowlistingsuniversities
-    fields = "__all__"
-
-class ZillowlistingswalkscoreModelSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Zillowlistingswalkscore
     fields = "__all__"
