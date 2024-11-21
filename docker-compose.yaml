@@ -4,7 +4,7 @@ services:
   django-service:
     restart: always
     container_name: django-service
-    image: ghcr.io/kunalmehta14/realestate-django-service
+    image: ghcr.io/kunalmehta14/realestate-django-service:1
     ports:
       - 8080:80
     volumes:
@@ -13,7 +13,7 @@ services:
   ml-logic-service:
     restart: always
     container_name: ml-logic-service
-    image: ghcr.io/kunalmehta14/realestate-ml-logic-service
+    image: ghcr.io/kunalmehta14/realestate-ml-logic-service:1
     ports:
       - 8010:8010
     volumes:
