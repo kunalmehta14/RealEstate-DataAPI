@@ -10,3 +10,7 @@ environment.env
 googlelogin/
 # Ignore Log Files
 *.logs
+# Testing FIles
+*test*
+# LLMS
+llms
