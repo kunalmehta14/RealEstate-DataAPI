@@ -11,6 +11,7 @@ RUN apt install \
 # Configure TimeZone
 RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
 RUN apt install python3-pip -y
+RUN apt install ninja-build -y
 # Create App Directory
 RUN mkdir /opt/src
 COPY src/requirements.txt /opt/src/requirements.txt

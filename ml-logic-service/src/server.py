@@ -1,21 +1,26 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-import cgi, json
-import google.generativeai as genai
-from sentence_transformers import SentenceTransformer
-from redis_vector_search import redis_search
+import cgi
+from redis_vector_search import process_request
 import os, logging
 from dotenv import find_dotenv, load_dotenv
 dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
+from llama_cpp.llama import Llama, LlamaGrammar
+from langchain.callbacks.manager import CallbackManager
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 #Global Logging Configuration
 logging.basicConfig(filename='/var/log/server.log', encoding='utf-8')
 
 class Server(BaseHTTPRequestHandler):
-  # Vector embedding opensource model, accessed using huggingface
-  # https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2
-  embedding_model_path = "sentence-transformers/all-MiniLM-L12-v2"
-  embedding_model = SentenceTransformer(embedding_model_path)
+  # LAMA LANGCHAIN MODEL LOAD
+  MODEL_PATH = r'./llms/2b_it_v2.gguf'
+  callback_manager: CallbackManager = CallbackManager([StreamingStdOutCallbackHandler()])
+  load_llama_model = Llama(model_path=MODEL_PATH,
+                            max_tokens=2000,
+                            top_p=1,
+                            callback_manager=callback_manager,
+                            verbose=True)
 
   def _set_headers(self):
     self.send_response(200)
@@ -25,36 +30,6 @@ class Server(BaseHTTPRequestHandler):
   def do_HEAD(self):
     self._set_headers()
 
-  def goggleChatResponse(self, message):
-    log = dict()
-    log['Function'] = 'goggleChatResponse()'
-    try:
-      prompt_instructions = open('prompt_instructions')
-      genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-      # Create the model
-      generation_config = {
-        "temperature": 1,
-        "top_p": 0.95,
-        "top_k": 64,
-        "max_output_tokens": 8192
-      }
-      model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
-        generation_config=generation_config,
-        system_instruction= prompt_instructions,
-      )
-      chat_session = model.start_chat(
-        history=[
-        ]
-      )
-      response = chat_session.send_message(message)
-      return response.text
-    except Exception as e:
-      log['Level'] = 'Error'
-      log['Message'] = f'''Could not process the request
-                         due to the following reasons: {e}'''
-      logging.error(log)
-  
   def do_POST(self):
     log = dict()
     if self.path == '/vector-search':
@@ -69,24 +44,11 @@ class Server(BaseHTTPRequestHandler):
                   }
         )
         message = form.getvalue("chat")
-        # send the message back
-        source_information = redis_search(message, self.embedding_model)
-        # Get the formated results
-        formated_results = []
-        for idx in range(1, len(source_information)):
-          if idx % 2 == 0:
-            formated_results.append(source_information[idx][1])
-        # updated_result = json.dumps(formated_results)
-        combined_information = f""" User Query:
-                            {message}
-
-                            Search Results, formatted in array:
-                            {formated_results}"""
-        ai_response = self.goggleChatResponse(combined_information)
+        # Process the user's query and receive AI response
+        ai_response = process_request(message, llama_model=self.load_llama_model)
         log['Level'] = 'Info'
         log['Message'] = f'''Processed the user query {message}
-                           successfully returned following 
-                           number of results: {len(formated_results)}.'''
+                             successfully returned.'''
         log['Status'] = '200'
         logging.info(log)
         self.send_response(200)
