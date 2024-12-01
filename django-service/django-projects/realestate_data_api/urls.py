@@ -4,7 +4,8 @@ from rest_framework import routers
 from .views import (CitiesdataListAPIView, CitiesdataAPIView,
                     RealestatelistingListAPIView, RealestatelistingAPIView,
                     MortgagedataListAPIView, MortgagedataAPIView,
-                    chatProcessorAPIView, login, register, logout)
+                    chatStartAPI, chatProcessAPI,
+                    login, register, logout)
 
 router = routers.DefaultRouter()
 urlpatterns = router.urls
@@ -24,7 +25,9 @@ urlpatterns += [
     path('mortgagerates/<str:lendername>',
          MortgagedataAPIView.as_view(), name='mortgagerate'),
     path('chat', 
-          chatProcessorAPIView, name='chatbot'),
+          chatStartAPI, name='chat'),
+     path('chat/<str:session>', 
+          chatProcessAPI, name='chatsession'),
     path('login', 
           login, name='login'),
     path('register', 

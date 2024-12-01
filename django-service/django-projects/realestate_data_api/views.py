@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework import status
-import requests, json
+import requests, json, uuid
 from django.db.models import OuterRef, Subquery, Max
 from .models import (Airbnbdata, Airbnbdataassociations,
                      Citiesdata, Collegesdata, Mortgagedata,
@@ -12,8 +12,8 @@ from .models import (Airbnbdata, Airbnbdataassociations,
                      Realestatelistingsameneties, Realestatelistingsassociations, 
                      Realestatelistingscolleges, Realestatelistingsschools,Realestatelistingsdetailed, 
                      Realestatelistingsuniversities, Realestatelistingswalkscore, 
-                     Schooldata, Universitiesdata, Yelpbusinessdata, 
-                     Yelpdata)
+                     Schooldata, Universitiesdata, Userchathistorysessions,
+                     Userchathistorymessages, Yelpbusinessdata, Yelpdata)
 from .serializer import (AirbnbdataModelSerializer, AirbnbdataassociationsModelSerializer, 
                          CitiesdataModelSerializer, CollegesdataModelSerializer, 
                          MortgagedataModelSerializer, RealestatelistingsModelSerializer, 
@@ -21,11 +21,12 @@ from .serializer import (AirbnbdataModelSerializer, AirbnbdataassociationsModelS
                          RealestatelistingsassociationsModelSerializer, RealestatelistingscollegesModelSerializer, 
                          RealestatelistingsschoolsModelSerializer, RealestatelistingsuniversitiesModelSerializer, 
                          RealestatelistingswalkscoreModelSerializer, RealestatelistingsdetailedModelSerializer, 
-                         SchooldataModelSerializer, UniversitiesdataModelSerializer, YelpbusinessdataModelSerializer, 
-                         YelpdataModelSerializer)
+                         SchooldataModelSerializer, UniversitiesdataModelSerializer, UserchathistorysessionsModelSerializer,
+                         UserchathistorymessagesModelSerializer, YelpbusinessdataModelSerializer, YelpdataModelSerializer)
 from django.contrib import auth
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class AirbnbdataListAPIView(APIView):
   queryset = Airbnbdata.objects.all()
@@ -167,52 +168,93 @@ class MortgagedataAPIView(generics.RetrieveAPIView):
 ############ USER AUTH/REGISTERATION OPERATIONS ##########
 ##########################################################
 def login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = auth.authenticate(request, username=username, password=password)
-        if user is not None:
-            auth.login(request, user)
-            return redirect('cities')
-        else:
-            error_message = 'Invalid username or password'
-            return (request, {'error_message': error_message})
-    else:
-        return request
+  if request.method == 'POST':
+      username = request.POST['username']
+      password = request.POST['password']
+      user = auth.authenticate(request, username=username, password=password)
+      if user is not None:
+          auth.login(request, user)
+          return redirect('cities')
+      else:
+          error_message = 'Invalid username or password'
+          return (request, {'error_message': error_message})
+  else:
+      return request
 
 def register(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
+  if request.method == 'POST':
+      username = request.POST['username']
+      email = request.POST['email']
+      password1 = request.POST['password1']
+      password2 = request.POST['password2']
 
-        if password1 == password2:
-            try:
-                user = User.objects.create_user(username, email, password1)
-                user.save()
-                auth.login(request, user)
-                return redirect('cities')
-            except:
-                error_message = 'Error creating account'
-                return error_message
-        else:
-            error_message = 'Password dont match'
-            return error_message
-    return request
+      if password1 == password2:
+          try:
+              user = User.objects.create_user(username, email, password1)
+              user.save()
+              auth.login(request, user)
+              return redirect('cities')
+          except:
+              error_message = 'Error creating account'
+              return error_message
+      else:
+          error_message = 'Password dont match'
+          return error_message
+  return request
 
 def logout(request):
     auth.logout(request)
     return redirect('cities')
 
-def chatProcessorAPIView(request):
-  if request.method == 'POST':
-      user_query = request.POST.get('message')
-      form_data ={'chat': f'{user_query}'}
-      response = requests.post("http://ml-logic-service:8008/vector-search", 
-                                data=form_data
-                              )
-      return HttpResponse(response, content_type="application/json")
+##########################################################
+################## USER AI CHAT OPERATIONS ###############
+##########################################################
+def chatStartAPI(request):
+  if request.method == 'POST' and request.path == '/chat':
+    session_id = str(uuid.uuid4())
+    chat_session = Userchathistorysessions(user=request.user, 
+                                           session=session_id,
+                                           created_at=timezone.now())
+    chat_session.save()
+    user_query = request.POST.get('message')
+    form_data ={'chat': f'{user_query}'}
+    response = requests.post("http://ml-logic-service:8010/vector-search", 
+                              data=form_data)
+    
+    chat_message = Userchathistorymessages(message=user_query, 
+                                          session_id=chat_session,
+                                          response=response.text, 
+                                          created_at=timezone.now())
+    chat_message.save()
+    return redirect(f'chat/{session_id}')
+  elif request.method == 'GET' and request.path == '/chat':
+    user_sessions = Userchathistorysessions.objects.filter(user=request.user)
+    serialized_data = UserchathistorysessionsModelSerializer(user_sessions, 
+                                                             many=True)
+    return JsonResponse(serialized_data.data, safe=False)
+
+def chatProcessAPI(request, session):
+  if request.method == 'GET':
+    session_messages = Userchathistorymessages.objects.filter(session_id=session)
+    serialized_data = UserchathistorymessagesModelSerializer(session_messages, 
+                                                             many=True)
+    return JsonResponse(serialized_data.data, safe=False)
+  elif request.method == 'POST':
+    user_query = request.POST.get('message')
+    form_data ={'chat': f'{user_query}'}
+    response = requests.post("http://ml-logic-service:8010/vector-search", 
+                              data=form_data)
+    
+    chat_message = Userchathistorymessages(message=user_query, 
+                                          session_id=session,
+                                          response=response.text, 
+                                          created_at=timezone.now())
+    chat_message.save()
+    session_messages = Userchathistorymessages.objects.filter(session_id=session)
+    serialized_data = UserchathistorymessagesModelSerializer(session_messages, 
+                                                             many=True)
+    return JsonResponse(serialized_data.data, safe=False)
+    
 
 class CollegesdataListAPIView(APIView):
   queryset = Collegesdata.objects.all()
