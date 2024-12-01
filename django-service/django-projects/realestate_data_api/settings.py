@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-from .routers import APIRouter
 import os
 from dotenv import find_dotenv, load_dotenv
 dotenv_path = find_dotenv()
@@ -32,13 +31,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-DATABASE_ROUTERS = ['routers.default_router.DefaultAppRouter',
-                    'routers.default_router.OntarioRouter']
+DATABASE_ROUTERS = ['routers.database_routers.DefaultAppRouter',
+                    'routers.database_routers.MessagesRouter',
+                    'routers.database_routers.OntarioRouter',
+                    ]
 
 SITE_ID=1
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -102,7 +102,14 @@ WSGI_APPLICATION = 'realestate_data_api.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {},
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv("MYSQL_DATABASE_DJANGODB"),
+        'USER': os.getenv("MYSQL_USER"),
+        'PASSWORD': os.getenv("MYSQL_PASSWORD"),
+        'HOST': os.getenv("MYSQL_HOST"),
+        'PORT': os.getenv("MYSQL_PORT")
+    },
     'DjangoDB': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv("MYSQL_DATABASE_DJANGODB"),
@@ -194,7 +201,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {
         "file": {
-            "level": "DEBUG",
+            "level": "INFO",
             "class": "logging.FileHandler",
             "filename": "/var/log/debug.log",
         },

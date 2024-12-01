@@ -5,9 +5,9 @@ from .models import (Airbnbdata, Airbnbdataassociations,
                      Realestatelistingsameneties, Realestatelistingsassociations, 
                      Realestatelistingscolleges, Realestatelistingsschools, 
                      Realestatelistingsuniversities, Realestatelistingswalkscore,
-                     Realestatelistingsdetailed, 
-                     Schooldata, Universitiesdata, Yelpbusinessdata, 
-                     Yelpdata)
+                     Realestatelistingsdetailed, Schooldata, Universitiesdata, 
+                     Userchathistorysessions, Yelpbusinessdata, 
+                     Userchathistorymessages, Yelpdata)
 
 class AirbnbdataModelSerializer(serializers.ModelSerializer):
   class Meta:
@@ -87,6 +87,16 @@ class SchooldataModelSerializer(serializers.ModelSerializer):
 class UniversitiesdataModelSerializer(serializers.ModelSerializer):
   class Meta:
     model = Universitiesdata
+    fields = "__all__"
+
+class UserchathistorysessionsModelSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Userchathistorysessions
+    fields = "__all__"
+
+class UserchathistorymessagesModelSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Userchathistorymessages
     fields = "__all__"
 
 class YelpbusinessdataModelSerializer(serializers.ModelSerializer):

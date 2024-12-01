@@ -6,7 +6,31 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from django.contrib.auth.models import User
+import uuid
 
+# Create your models here.
+class Userchathistorysessions(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    session = models.CharField(primary_key = True, editable = False, max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.session
+
+    class Meta:
+        managed = True
+        db_table = 'realestate_data_api_userchathistorysessions'
+
+class Userchathistorymessages(models.Model):
+    message_id = models.AutoField(primary_key=True)
+    session = models.ForeignKey(Userchathistorysessions, on_delete=models.CASCADE) 
+    message = models.CharField(max_length=256)
+    response = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        managed = True
+        db_table = 'realestate_data_api_userchathistorymessages'
 
 class Airbnbdata(models.Model):
     id = models.BigIntegerField(db_column='Id', primary_key=True)  # Field name made lowercase.
